@@ -25,8 +25,26 @@
 **[Answer]** ls -d (current | @random_path() | multi)\*/ (.\*/)
 
 
-## Authority
+## permissions
 
+**[Quiz]** is (@random_path()) a directory or file?
+
+**[Tip]** `man ls`
+
+**[Answer]** ls -ld (@random_path())
+
+<hr/>
+
+**[Quiz]** can (you | @random_user() | @random_group()) (read | write | execute) (@random_path())?
+
+**[Tip]** `man ls`
+
+**[Answer]** ls -ld (@random_path())
 
 ## Size
 
+**[Quiz]** how much size of (@random_path())?
+
+**[Tip]** `man ls`
+
+**[Answer]** ls -ldh (@random_path())
