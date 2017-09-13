@@ -22,7 +22,7 @@
 
 **[Tip]** `ls -d ?`
 
-**[Answer]** ls -d (current | @random_path() | multi)*/ (.*/)
+**[Answer]** ls -d (current | @random_path() | multi)\*/ (.\*/)
 
 
 ## Authority
