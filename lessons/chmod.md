@@ -21,3 +21,11 @@
 **[Tip]** null
 
 **[Answer]** chown user:groupName file
+
+<hr/>
+
+**[Quiz]** what's the means of `chmod (u+f) (@random_file)`?
+
+**[Tip]** null
+
+**[Answer]** (selections)
