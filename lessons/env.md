@@ -1,6 +1,6 @@
 # environments
 
-**[Quiz]** If you want to (PATH | environment variables | user settings | default user settings), which files should you modify?
+**[Quiz]** If you want to (PATH | environment variables | user settings | default user settings | user program | global program), which files should you modify?
 
 - ~/.profile
 - ~/.bash_profile
@@ -8,6 +8,8 @@
 - ~/.bashrc
 - /etc/profile
 - /etc/bash.bashrc
+- ~/bin
+- usr/local/bin
 
 **[Tip]** null
 
@@ -51,6 +53,8 @@ alias (@random_name)='(@random_command)'
 
 <hr />
 
+**[Quiz]** what does the `. ~/.bashrc` command means ?
 
+**[Tip]** man source
 
-
+**[Answer]** source ~/.bashrc

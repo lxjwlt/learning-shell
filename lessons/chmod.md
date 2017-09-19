@@ -16,14 +16,6 @@
 
 <hr/>
 
-**[Quiz]** change the (owner|user group) of (@random_path()) to (@random_name())
-
-**[Tip]** null
-
-**[Answer]** chown user:groupName file
-
-<hr/>
-
 **[Quiz]** what's the means of `chmod (u+f) (@random_file)`?
 
 **[Tip]** null
