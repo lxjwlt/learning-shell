@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "chalk": "^2.1.0",
     "commander": "^2.11.0",
     "vorpal": "^1.12.0"
   },

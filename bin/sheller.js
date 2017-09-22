@@ -4,27 +4,31 @@
 
 const fs = require('fs');
 const path = require('path');
-const program = require('commander');
-const version = require('../package.json').version;
+const vorpal = require('vorpal')();
+const util = require('../lib/util');
+// const version = require('../package.json').version;
 const cachePath = path.resolve(process.env.HOME, '.sheller');
+const status = require('../lib/status');
 
 if (!fs.existsSync(cachePath)) {
     fs.mkdirSync(cachePath);
 }
 
-if (!process.argv.slice(2).length) {
+console.clear();
+
+[
+    '#'.repeat(80),
+    '#' + ' '.repeat(35) + 'sheller' + ' '.repeat(36) + '#',
+    '#'.repeat(80)
+].forEach((text) => console.log(text));
+
+status.newTask(1);
+
+vorpal.delimiter(
     [
-        '#'.repeat(80),
-        '#' + ' '.repeat(35) + 'sheller' + ' '.repeat(36) + '#',
-        '#'.repeat(80)
-    ].forEach((text) => console.log(text));
+        `Sheller ${status.getTaskName()}<${status.getStatusText()}>`,
+        `${util.nicePath()} $ `
+    ].join('\n')
+);
 
-    process.exit(0);
-}
-
-program
-    .version(version)
-    .command('check', 'check your work')
-    .command('replay', 'replay your current task')
-    .command('reset', 'reset all work progress')
-    .parse(process.argv);
+vorpal.show();
