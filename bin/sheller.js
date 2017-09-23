@@ -28,13 +28,6 @@ status.newTask(1);
 let currentCommand;
 let cwd = process.cwd();
 
-vorpal.delimiter(
-    [
-        `Sheller ${status.getTaskName()}<${status.getStatusText()}>`,
-        `${util.nicePath(cwd)} $ `
-    ].join('\n')
-);
-
 function updateDelimiter () {
     vorpal.delimiter(
         [
@@ -46,6 +39,8 @@ function updateDelimiter () {
 
 updateDelimiter();
 
+vorpal.history('sheller');
+
 vorpal
     .catch('[words...]')
     .allowUnknownOptions()
@@ -54,7 +49,7 @@ vorpal
         return command;
     })
     .action((args, cb) => {
-        exec(currentCommand + ' && echo "sheller-cwd:$PWD"', {cwd: cwd}, (err, stdout, stderr) => {
+        exec(currentCommand + ' && echo "sheller-cwd:$PWD"', {cwd: cwd, env: process.env}, (err, stdout, stderr) => {
 
             if (stdout) {
                 stdout = util.splitLines(stdout).filter((line) => {
