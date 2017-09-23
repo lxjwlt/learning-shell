@@ -46,4 +46,6 @@ vorpal
         cd();
     });
 
+process.on('exit', () => status.save());
+
 vorpal.show();
