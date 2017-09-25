@@ -27,6 +27,7 @@ status.newTask(1);
 
 let currentCommand;
 let cwd = process.cwd();
+let env = '';
 
 function updateDelimiter () {
     vorpal.delimiter(
@@ -49,18 +50,22 @@ vorpal
         return command;
     })
     .action((args, cb) => {
-        exec(currentCommand + ' && echo "sheller-cwd:$PWD"', {cwd: cwd, env: process.env}, (err, stdout, stderr) => {
+
+        var command = util.addQueryCommand(currentCommand, {
+            cwd: 'PWD',
+            env: 'env'
+        });
+
+        exec(env + command, {cwd: cwd}, (err, stdout, stderr) => {
 
             if (stdout) {
-                stdout = util.splitLines(stdout).filter((line) => {
-                    if (line.indexOf('sheller-cwd:') === 0) {
-                        cwd = line.replace('sheller-cwd:', '');
-                        return false;
-                    }
-                    return true;
-                }).join('\n');
+                let info = util.parseQueryCommand(stdout);
 
-                vorpal.log(stdout);
+                cwd = info.map.cwd[0];
+
+                env = info.map.env.join('&&') + '&&';
+
+                vorpal.log(info.clearLines.join('\n'));
             }
 
             if (stderr) {
