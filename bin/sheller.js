@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const vorpal = require('vorpal')();
 const util = require('../lib/util');
-// const version = require('../package.json').version;
+const version = require('../package.json').version;
 const cachePath = path.resolve(process.env.HOME, '.sheller');
 const {exec} = require('child_process');
 const status = require('../lib/status');
@@ -19,7 +19,7 @@ console.clear();
 
 [
     '#'.repeat(80),
-    '#' + ' '.repeat(35) + 'sheller' + ' '.repeat(36) + '#',
+    util.centerBanner('#', `sheller v${version}`, '#', 80),
     '#'.repeat(80)
 ].forEach((text) => console.log(text));
 
