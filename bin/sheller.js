@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const vorpal = require('vorpal')();
 const util = require('../lib/util');
+const chalk = require('chalk');
 const version = require('../package.json').version;
 const cachePath = path.resolve(process.env.HOME, '.sheller');
 const {exec} = require('child_process');
@@ -32,8 +33,9 @@ let env = '';
 function updateDelimiter () {
     vorpal.delimiter(
         [
-            `Sheller ${status.getTaskName()}<${status.getStatusText()}>`,
-            `${util.nicePath(cwd)} $ `
+            chalk.blue(util.nicePath(cwd)) +
+            ` - [${chalk.cyanBright('sheller')} ${status.getTaskName()}]`,
+            `$ `
         ].join('\n')
     );
 }
