@@ -11,6 +11,7 @@ const version = require('../package.json').version;
 const cachePath = path.resolve(process.env.HOME, '.sheller');
 const {exec} = require('child_process');
 const status = require('../lib/status');
+const {quizList} = require('../lib/quiz');
 
 if (!fs.existsSync(cachePath)) {
     fs.mkdirSync(cachePath);
@@ -43,6 +44,26 @@ function updateDelimiter () {
 updateDelimiter();
 
 vorpal.history('sheller');
+
+vorpal
+    .command('list', 'list all quiz to select')
+    .action(function (args, cb) {
+        return this.prompt({
+            type: 'list',
+            name: 'quizId',
+            message: 'Which quiz do you want to practice？',
+            choices: quizList.map((quiz, i) => {
+
+                return {
+                    name: `${i + 1}.${quiz.title}`,
+                    value: quiz.id
+                };
+            })
+        }, function(result){
+            vorpal.log(result.quizId); // todo pick quiz
+            cb();
+        });
+    });
 
 vorpal
     .catch('[words...]')
