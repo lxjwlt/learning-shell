@@ -49,7 +49,8 @@ vorpal.history('sheller');
 vorpal
     .command('list', 'list all quiz to select')
     .action(function (args, cb) {
-        return this.prompt({
+        let commandInstance = this;
+        commandInstance.prompt({
             type: 'list',
             name: 'quizId',
             message: 'Which quiz do you want to practice？',
@@ -62,7 +63,17 @@ vorpal
             })
         }, function (result) {
             status.startQuiz(result.quizId);
-            cb();
+
+            if (status.quiz.prompt) {
+                commandInstance.prompt(status.quiz.prompt, function (result) {
+                    validateQuiz({
+                        prompt: result
+                    });
+                    cb();
+                });
+            } else {
+                cb();
+            }
         });
     });
 
@@ -106,23 +117,9 @@ vorpal
                 vorpal.log(stderr);
             }
 
-            if (status.quiz) {
-                let valid = status.validate({
-                    cmd: currentCommand,
-                    cwd: cwd,
-                    logs: info && info.clearLines
-                });
-
-                if (valid.length) {
-                    vorpal.log([].concat(valid).join('\n'));
-                }
-
-                if (valid === true) {
-                    vorpal.log(chalk.green('quiz passed!'));
-                } else {
-                    vorpal.log(chalk.red('wrong, please try again!'));
-                }
-            }
+            validateQuiz({
+                logs: info && info.clearLines
+            });
 
             cb();
         });
@@ -134,5 +131,24 @@ vorpal.on('client_command_executed', () => {
 });
 
 process.on('exit', () => status.save());
+
+function validateQuiz (data) {
+    if (status.quiz) {
+        let valid = status.validate(Object.assign({
+            cmd: currentCommand,
+            cwd: cwd
+        }, data));
+
+        if (valid.length) {
+            vorpal.log([].concat(valid).join('\n'));
+        }
+
+        if (valid === true) {
+            vorpal.log(chalk.green('quiz passed!'));
+        } else {
+            vorpal.log(chalk.red('wrong, please try again!'));
+        }
+    }
+}
 
 vorpal.show();
