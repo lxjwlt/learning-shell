@@ -92,9 +92,10 @@ vorpal
         });
 
         exec(env + command, {cwd: cwd}, (err, stdout, stderr) => {
+            let info;
 
             if (stdout) {
-                let info = util.parseQueryCommand(stdout);
+                info = util.parseQueryCommand(stdout);
 
                 cwd = info.map.cwd[0];
 
@@ -108,7 +109,11 @@ vorpal
             }
 
             if (status.quiz) {
-                let valid = status.validate(currentCommand, cwd);
+                let valid = status.validate({
+                    cmd: currentCommand,
+                    cwd: cwd,
+                    logs: info && info.clearLines
+                });
 
                 if (valid.length) {
                     vorpal.log([].concat(valid).join('\n'));

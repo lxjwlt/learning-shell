@@ -8,8 +8,8 @@ module.exports = function () {
             title: 'working directory',
             info: 'print name of current working directory',
             tips: 'man pwd',
-            validate (command) {
-                return command === 'pwd';
+            validate ({logs}) {
+                return logs.some((log) => log.trim() === process.cwd());
             }
         },
         {
@@ -26,7 +26,7 @@ module.exports = function () {
             info: function (data) {
                 return `Change your directory to ${data.path}`;
             },
-            validate: function (command, cwd, data) {
+            validate: function ({cmd, cwd, data}) {
                 let targetPath = data.path;
 
                 if (targetPath === 'your home directory') {
@@ -34,7 +34,7 @@ module.exports = function () {
                 }
 
                 if (targetPath === 'last path') {
-                    return command === 'cd -';
+                    return cmd === 'cd -';
                 }
 
                 return cwd === targetPath;
