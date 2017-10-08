@@ -25,8 +25,6 @@ console.clear();
     '#'.repeat(80)
 ].forEach((text) => console.log(text));
 
-status.newTask(1);
-
 let currentCommand;
 let cwd = process.cwd();
 let env = '';
@@ -59,8 +57,9 @@ vorpal
                     value: quiz.id
                 };
             })
-        }, function(result){
-            vorpal.log(result.quizId); // todo pick quiz
+        }, function (result) {
+            status.startQuiz(result.quizId);
+            vorpal.log(status.quiz.info);
             cb();
         });
     });
@@ -96,6 +95,20 @@ vorpal
             }
 
             updateDelimiter();
+
+            if (status.quiz) {
+                let valid = status.validate(currentCommand, cwd);
+
+                if (valid.length) {
+                    vorpal.log([].concat(valid).join('\n'));
+                }
+
+                if (valid === true) {
+                    vorpal.log(chalk.green('quiz passed!'));
+                } else {
+                    vorpal.log(chalk.red('wrong, please try again!'));
+                }
+            }
 
             cb();
         });

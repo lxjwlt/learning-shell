@@ -1,7 +1,6 @@
 'use strict';
 
-const randomUtil = require('../lib/random');
-const {random} = require('data-seed');
+const random = require('../lib/random');
 
 module.exports = function () {
     return [
@@ -15,32 +14,30 @@ module.exports = function () {
         },
         {
             title: 'change directory',
-            info: function () {
-                random.one();
-
-                return [
-                    'Change your directory to {{path}}',
-                    {
-                        path: random.one(
-                            randomUtil.randomExistPath(),
-                            'last path',
-                            'your home directory'
-                        )
-                    }
-                ];
+            data: function () {
+                return {
+                    path: random.one(
+                        random.randomExistPath(),
+                        'last path',
+                        'your home directory'
+                    )
+                };
             },
-            validate: function (command, log, info) {
-                let infoPath = info[1].path;
+            info: function (data) {
+                return `Change your directory to ${data.path}`;
+            },
+            validate: function (command, cwd, data) {
+                let targetPath = data.path;
 
-                if (infoPath === 'your home directory') {
-                    return process.cwd() === process.env.HOME;
+                if (targetPath === 'your home directory') {
+                    return cwd === process.env.HOME;
                 }
 
-                if (infoPath === 'last path') {
+                if (targetPath === 'last path') {
                     return command === 'cd -';
                 }
 
-                return process.cwd() === info[1].path;
+                return cwd === targetPath;
             }
         }
     ];
