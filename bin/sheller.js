@@ -30,10 +30,14 @@ let cwd = process.cwd();
 let env = '';
 
 function updateDelimiter () {
+    let tail = status.getTaskName();
+
+    tail = tail ? ' - ' + tail : '';
+
     vorpal.delimiter(
         [
             chalk.blue(util.nicePath(cwd)) +
-            ` - [${chalk.cyanBright('sheller')} ${status.getTaskName()}]`,
+            ` [${chalk.cyanBright('sheller')}${tail}]`,
             `$ `
         ].join('\n')
     );
@@ -62,6 +66,15 @@ vorpal
             vorpal.log(status.quiz.info);
             cb();
         });
+    });
+
+vorpal
+    .command('quit', 'quit current quiz')
+    .action(function (args, cb) {
+
+        status.quitQuiz();
+
+        cb();
     });
 
 vorpal
@@ -94,8 +107,6 @@ vorpal
                 vorpal.log(stderr);
             }
 
-            updateDelimiter();
-
             if (status.quiz) {
                 let valid = status.validate(currentCommand, cwd);
 
@@ -113,6 +124,10 @@ vorpal
             cb();
         });
     });
+
+vorpal.on('client_command_executed', () => {
+    updateDelimiter();
+});
 
 process.on('exit', () => status.save());
 
