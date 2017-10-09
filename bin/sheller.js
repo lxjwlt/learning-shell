@@ -118,7 +118,8 @@ vorpal
             }
 
             validateQuiz({
-                logs: info && info.clearLines
+                logs: info && info.clearLines,
+                args: args
             });
 
             cb();
