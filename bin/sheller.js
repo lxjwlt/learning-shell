@@ -106,9 +106,13 @@ vorpal
             if (stdout) {
                 info = util.parseQueryCommand(stdout);
 
-                cwd = info.map.cwd[0];
+                if (info.map.cwd) {
+                    cwd = info.map.cwd[0];
+                }
 
-                env = info.map.env.join('&&') + '&&';
+                if (info.map.env) {
+                    env = info.map.env.join('&&') + '&&';
+                }
 
                 vorpal.log(info.clearLines.join('\n'));
             }
