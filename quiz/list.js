@@ -150,15 +150,54 @@ module.exports = function () {
             info (data) {
                 return `is there ${data.fileName} inner ${data.path}?`;
             },
-            prompt (data) {
+            prompt (data, info) {
                 return {
                     type: 'confirm',
                     name: 'confirm',
-                    message: `is there ${data.fileName} inner ${data.path}?`
+                    message: info
                 }
             },
             validate ({data, prompt}) {
                 return (data.realPath === data.path) === prompt.confirm;
+            }
+        },
+        {
+            title: 'distinguish folders and files',
+            data () {
+                let randomPathMap = random.randomExistPath();
+
+                let isFile = random.one(true, false);
+
+                return {
+                    isFile: isFile,
+                    path: random.array(
+                        isFile ? randomPathMap.files : randomPathMap.directories
+                    )
+                };
+            },
+            info (data) {
+                return `is ${data.path} a folder or file?`;
+            },
+            prompt (data, info) {
+                return {
+                    type: 'list',
+                    name: 'type',
+                    message: info,
+                    choices: [
+                        {
+                            name: 'file',
+                            value: 'file'
+                        },
+                        {
+                            name: 'folder',
+                            value: 'folder'
+                        }
+                    ]
+                };
+            },
+            validate ({data, prompt}) {
+                return data.isFile ?
+                    prompt.type === 'file' : prompt.type === 'folder';
             }
         }
     ];
