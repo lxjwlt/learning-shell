@@ -123,7 +123,7 @@ vorpal
 
             validateQuiz({
                 logs: info && info.clearLines,
-                args: args
+                args: util.parseCommand(currentCommand)
             });
 
             cb();

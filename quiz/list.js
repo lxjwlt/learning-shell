@@ -64,6 +64,75 @@ module.exports = function () {
             }
         },
         {
+            title: 'find out directories',
+            data: function () {
+                let dirs = random.randomExistPath().directories;
+
+                return {
+                    // todo list only hidden directories
+                    path: random.one(
+                        random.array(dirs), 'current'
+                    )
+                };
+            },
+            info: function (data) {
+                return `List all directories under ${data.path} directory`;
+            },
+            validate: function ({cmd, data, args, cwd}) {
+
+                let targetPath = data.path === 'current' ? cwd : data.path;
+
+                if (args.words[0] === 'find') {
+                    if (args.options.maxdepth !== 1) {
+                        return false;
+                    }
+
+                    if (args.options.type !== 'd') {
+                        return false;
+                    }
+
+                    let cmdPath = path.resolve(cwd, util.formNicePath(args.words[1]));
+
+                    return cmdPath === targetPath;
+                } else if (args.words[0] === 'ls') {
+                    if (!args.options.d) {
+                        return false;
+                    }
+
+                    let isMatch = false;
+
+                    for (let word of cmd.split(/\s+/g)) {
+                        let relativePath = '.';
+                        let match = word.match(/^([^*]+)?\.\*\/$/);
+
+                        if (match) {
+                            relativePath = match[1] || '.';
+                            isMatch = path.resolve(util.formNicePath(relativePath)) === targetPath;
+
+                            if (isMatch) {
+                                break;
+                            }
+                        }
+
+                        match = word.match(/^([^*]+)?\*\/$/);
+
+                        if (match) {
+                            relativePath = match[1] || '.';
+                            isMatch = path.resolve(util.formNicePath(relativePath)) === targetPath;
+
+                            if (isMatch) {
+                                break;
+                            }
+                        }
+                    }
+
+                    return isMatch;
+                }
+
+                return false;
+            }
+        },
+        {
             title: 'existence of file or directory',
             data () {
                 let randomPathMap = random.randomExistPath();
