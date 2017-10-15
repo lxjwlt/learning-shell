@@ -11,7 +11,8 @@ module.exports = function () {
                 let map = {
                     'mkdir test && cd $_': 'make a directory named "test" and change working path to it.',
                     'cd ~root': 'change working directory to home directory of "root" user',
-                    'id root': 'return identity of "root" user'
+                    'id root': 'return identity of "root" user',
+                    'ls -lh': 'list files and use unit suffixes In long format listings'
                 };
 
                 return {
