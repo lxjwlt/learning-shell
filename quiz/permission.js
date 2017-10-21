@@ -105,6 +105,72 @@ module.exports = function () {
                     fs.removeSync(data.file);
                 }
             }
+        },
+        {
+            title: 'calculate permission',
+            data: function () {
+
+                function createFileMode () {
+                    return 'rwx'.repeat(3).split('').map((value) => random.one(value, '-')).join('');
+                }
+
+                function parseFileModeToDigit (mode) {
+                    return parseInt(
+                        mode.split('').map((value) => value !== '-' ? 1 : 0).join(''),
+                        2
+                    ).toString(8)
+                }
+
+                let mode = createFileMode();
+
+                let digit = parseFileModeToDigit(mode);
+
+                let isChooseDigit = random.one(true, false);
+
+                let choices, answer, target;
+
+                if (isChooseDigit) {
+                    target = mode;
+                    answer = digit;
+                    choices = Array.from(Array(2)).map(() =>
+                        random.int(0, parseInt('777', 8)).toString(8));
+                } else {
+                    target = digit;
+                    answer = mode;
+                    choices = [createFileMode(), createFileMode()];
+                }
+
+                choices.push(answer);
+
+                choices.sort(() => random.one(1, -1));
+
+                return {
+                    isChooseDigit,
+                    target,
+                    answer,
+                    choices
+                };
+            },
+            info: function (data) {
+                let targetName = data.isChooseDigit ? 'file mode' : 'Octal digits';
+                let chooseName = data.isChooseDigit ? 'Octal digits' : 'file mode';
+
+                return `choose the right ${chooseName} of ${targetName} ${data.target}`;
+            },
+            prompt (data, info) {
+                return {
+                    type: 'list',
+                    name: 'answer',
+                    message: info,
+                    choices: data.choices.map((value) => ({
+                        name: value,
+                        value: value
+                    }))
+                };
+            },
+            validate: function ({data, prompt}) {
+                return prompt.answer === data.answer;
+            }
         }
     ];
 };
