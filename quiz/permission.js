@@ -171,6 +171,56 @@ module.exports = function () {
             validate: function ({data, prompt}) {
                 return prompt.answer === data.answer;
             }
+        },
+        {
+            title: 'Change owner of file',
+            data () {
+                let userArr = Object.entries(util.getAllUsers()).filter((userArr) => {
+                    return userArr[0] !== process.env.UID;
+                });
+
+                userArr = random.array(userArr);
+
+                let groupArr = random.array(Object.entries(util.getAllGroups()));
+
+                return {
+                    checkUser: random.one(true, false),
+                    checkGroup: random.one(true, false),
+                    type: random.pick(['user', 'group'], random.int(1, 2)),
+                    file: util.createTempFile('test'),
+                    user: userArr[1],
+                    uid: Number(userArr[0]),
+                    group: groupArr[1],
+                    gid: Number(groupArr[0])
+                };
+            },
+            info (data) {
+                let userStr = data.checkUser >= 0 ?
+                   `user "${data.user}"` : '';
+
+                let groupStr = data.checkGroup >= 0 ?
+                    `group "${data.group}"` : '';
+
+                return `Changes the ownership of file "${data.file}" to ${[userStr, groupStr].join(' and ')}`;
+            },
+            validate ({data}) {
+                let stat = fs.statSync(data.file);
+
+                if (data.checkUser && data.uid !== stat.uid) {
+                    return false;
+                }
+
+                if (data.checkGroup && data.gid !== stat.gid) {
+                    return false;
+                }
+
+                return true;
+            },
+            destroy (data) {
+                if (data.file) {
+                    fs.removeSync(data.file);
+                }
+            }
         }
     ];
 };
