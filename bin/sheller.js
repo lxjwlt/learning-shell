@@ -64,16 +64,27 @@ vorpal
         }, function (result) {
             status.startQuiz(result.quizId);
 
-            if (status.quiz.prompt) {
-                commandInstance.prompt(status.quiz.prompt, function (result) {
-                    validateQuiz({
-                        prompt: result
-                    });
-                    cb();
-                });
-            } else {
-                cb();
-            }
+            cb();
+
+            vorpal.exec('resume');
+        });
+    });
+
+vorpal
+    .command('resume', 'reload prompt quiz')
+    .action(function (args, cb) {
+        let commandInstance = this;
+
+        if (!status.quiz || !status.quiz.prompt) {
+            cb();
+            return;
+        }
+
+        commandInstance.prompt(status.quiz.prompt, function (result) {
+            validateQuiz({
+                prompt: result
+            });
+            cb();
         });
     });
 
@@ -157,3 +168,5 @@ function validateQuiz (data) {
 }
 
 vorpal.show();
+
+vorpal.exec('resume');
