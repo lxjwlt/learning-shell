@@ -49,7 +49,7 @@ module.exports = function () {
                 return `what\'s meaning of this command: ${data.command}`;
             },
             validate ({prompt, data}) {
-                return prompt.meaning === data.map[data.command];
+                return Boolean(prompt && prompt.meaning === data.map[data.command]);
             }
         }
     ];
